@@ -589,14 +589,10 @@ class Oci8 extends PDO
         $sql = str_ireplace('· ', '', $sql);
         //格式化date_format
         $sql = preg_replace_callback("/DATE_FORMAT\([^,]*?,.*?\)/is",array(&$this,"date_replace"),$sql);
-        //未运算处理
+        //位运算处理
         $sql = preg_replace('/\s*(\w+)&([0-9]+)\s*?=/',' BITAND($1,$2)=',$sql);
-        //替换 json_contains
-        //$sql = preg_replace("/json_contains\(([^,]*?),(.*?)\)/is",'JSON_TEXTCONTAINS($1,\'$\',$2)',$sql);
-
-        /*if (stripos($sql,'json_contains')){
-            var_dump($sql);exit();
-        }*/
+        $sql = preg_replace('/\s*(\w+)|([0-9]+)\s*?=/',' BITOR($1,$2)=',$sql);
+        $sql = preg_replace('/\s*(\w+)^([0-9]+)\s*?=/',' BITXOR($1,$2)=',$sql);
 
         return $sql;
     }
